@@ -5,11 +5,8 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ main ]
-    paths:
-    - 'HelloWorld/**'
-    - '.github/workflows/feature-toggles-hello-world-AutoDeployTrigger-cbcd06fb-ef9f-4baa-af9d-bb9ecfb5f992.yml'
-
+      [ main, localization ]
+      
   # Allow manual trigger 
   workflow_dispatch:      
 
@@ -31,17 +28,16 @@ jobs:
           tenant-id: ${{ secrets.FEATURETOGGLESHELLOWORLD_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.FEATURETOGGLESHELLOWORLD_AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build and push container image to registry
-        uses: azure/container-apps-deploy-action@v2
+      - name: 'Build and push image'
+        uses: azure/docker-login@v1
         with:
-          appSourcePath: ${{ github.workspace }}/HelloWorld 
-          registryUrl: featuretoggleshelloworld.azurecr.io
-          registryUsername: ${{ secrets.FEATURETOGGLESHELLOWORLD_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.FEATURETOGGLESHELLOWORLD_REGISTRY_PASSWORD }}
-          containerAppName: feature-toggles-hello-world
-          resourceGroup: feature-toggles-hello-world
-          imageToBuild: featuretoggleshelloworld.azurecr.io/feature-toggles-hello-world:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
+            login-server: featuretoggleshelloworld.azurecr.io
+            username:  ${{ secrets.FEATURETOGGLESHELLOWORLD_REGISTRY_USERNAME }}
+            password: ${{ secrets.FEATURETOGGLESHELLOWORLD_REGISTRY_PASSWORD }}  
+      - run: |
+          docker build ${{ github.workspace }}/HelloWorld -t featuretoggleshelloworld.azurecr.io/feature-toggles-hello-world:${{ github.sha }}
+          docker push featuretoggleshelloworld.azurecr.io/feature-toggles-hello-world:${{ github.sha }}
+
+      
 
 
