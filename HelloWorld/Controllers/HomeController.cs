@@ -1,26 +1,28 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Models;
+using OpenFeature;
+using OpenFeature.Model;
 
 namespace HelloWorld.Controllers;
 
-public class HomeController : Controller
+public class HomeController(IFeatureClient featureClient)
+    : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index(Languages language)
     {
-        _logger = logger;
-    }
-
-    public IActionResult Index()
-    {
+        ViewData["LocalizationFeatureEnabled"] = await featureClient.GetBooleanValue("localization", false);
+        ViewData["Greeting"] = Greeting(language);
+        ViewData["Language"] = language;
         return View();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    string Greeting(Languages language)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return language switch
+        {
+            Languages.French => "Bonjour",
+            Languages.Spanish => "Hola",
+            _ => "Hello"
+        };
     }
 }

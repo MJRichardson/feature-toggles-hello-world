@@ -1,7 +1,28 @@
-﻿@{
+﻿@model HomeModel;
+
+@{
     ViewData["Title"] = "Home Page";
+
+    var localizationFeatureEnabled = ViewData["LocalizationFeatureEnabled"] as bool? ?? false;
 }
 
 <div class="text-center">
-    <h1 class="display-4">Hello World!</h1>
+    <h1 class="display-4">@ViewData["Greeting"] World!</h1>
+    
+    @if (localizationFeatureEnabled)
+    {
+        <select id="language" asp-items="Html.GetEnumSelectList<Languages>()" asp-for="@ViewData["Language"]"></select>
+    }
+
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('#language').change(function(){
+           const selectedLanguage = $('#language :selected').val();
+           const searchParams = new URLSearchParams(window.location.search);
+           searchParams.set("language", selectedLanguage);
+           window.location.search = searchParams.toString();
+        });
+    </script>
+}

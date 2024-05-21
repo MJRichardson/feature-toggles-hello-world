@@ -1,5 +1,6 @@
 using Octopus.OpenFeature.Provider;
 using OpenFeature;
+using OpenFeature.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var octopusFeatureTogglesClientId = builder.Configuration["FeatureToggles:ClientId"] ?? "";
 await OpenFeature.Api.Instance.SetProviderAsync(
     new OctopusFeatureProvider(new OctopusFeatureConfiguration(octopusFeatureTogglesClientId)));
-builder.Services.AddScoped<IFeatureClient>(sp => OpenFeature.Api.Instance.GetClient());
+builder.Services.AddScoped<IFeatureClient>(GetFeatureClient);
 
 // Add MVC controllers 
 builder.Services.AddControllersWithViews();
@@ -34,3 +35,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+return;
+
+static IFeatureClient GetFeatureClient(IServiceProvider serviceProvider)
+{
+    var client = OpenFeature.Api.Instance.GetClient();
+    client.SetContext(EvaluationContext.Builder().Set("segment", "alpha").Build());
+    return client;
+}
