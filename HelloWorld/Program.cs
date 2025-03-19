@@ -1,14 +1,26 @@
 using Octopus.OpenFeature.Provider;
 using OpenFeature;
+using OpenFeature.Contrib.Providers.EnvVar;
 using OpenFeature.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add OpenFeature feature toggle client 
 var octopusFeatureTogglesClientId = builder.Configuration["FeatureToggles:ClientId"] ?? "";
-await OpenFeature.Api.Instance.SetProviderAsync(
-    new OctopusFeatureProvider(new OctopusFeatureConfiguration(octopusFeatureTogglesClientId)));
-builder.Services.AddScoped<IFeatureClient>(GetFeatureClient);
+
+if (builder.Environment.IsDevelopment())
+{
+    // If running locally, use the environment variable provider
+    await OpenFeature.Api.Instance.SetProviderAsync(new EnvVarProvider("FeatureToggle_"));
+}
+else
+{
+    // if running in another environment, use the Octopus provider
+    await OpenFeature.Api.Instance.SetProviderAsync(
+        new OctopusFeatureProvider(new OctopusFeatureConfiguration(octopusFeatureTogglesClientId)));
+}
+
+builder.Services.AddScoped(GetFeatureClient);
 
 // Add MVC controllers 
 builder.Services.AddControllersWithViews();

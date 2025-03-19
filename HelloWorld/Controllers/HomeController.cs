@@ -10,9 +10,7 @@ public class HomeController(IFeatureClient featureClient)
 {
     public async Task<IActionResult> Index(Languages language)
     {
-        var context = EvaluationContext.Builder().Set("segment", "user")
-        await featureClient.GetBooleanValue("localization", false);
-        ViewData["LocalizationFeatureEnabled"] = await featureClient.GetBooleanValue("localization", false);
+        ViewData["LocalizationFeatureEnabled"] = await featureClient.GetBooleanValueAsync("localization", false);
         ViewData["Greeting"] = Greeting(language);
         ViewData["Language"] = language;
         return View();
