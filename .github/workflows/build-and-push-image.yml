@@ -30,8 +30,8 @@ jobs:
 
       - name: Build and push image
         run: |
-        docker build ${{ github.workspace }}/HelloWorld -t ghcr.io/octopusdeploy/feature-toggles-hello-world:${{ github.sha }}
-        docker push ghcr.io/octopusdeploy/feature-toggles-hello-world:${{ github.sha }}
+          docker build ${{ github.workspace }}/HelloWorld -t ghcr.io/octopusdeploy/feature-toggles-hello-world:${{ github.sha }}
+          docker push ghcr.io/octopusdeploy/feature-toggles-hello-world:${{ github.sha }}
 
 
      
