@@ -12,11 +12,8 @@ on:
 
 jobs:
   build-and-deploy:
-    permissions: write-all
     runs-on: ubuntu-latest
-    permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
+    permissions: write-all
 
     steps:
       - name: Checkout to the branch
