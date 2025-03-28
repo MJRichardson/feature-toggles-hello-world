@@ -48,7 +48,7 @@ jobs:
           space: 'Pattern - Feature Toggles'
           project: 'Hello World (with Feature Toggles)'
           packages: | 
-            feature-toggles-hello-world:${{ github.sha }}
+            helloworld:${{ github.sha }}
 
 
      
