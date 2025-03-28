@@ -31,6 +31,20 @@ jobs:
           docker build ${{ github.workspace }}/HelloWorld -t ghcr.io/mjrichardson/feature-toggles-hello-world:${{ github.sha }}
           docker push ghcr.io/mjrichardson/feature-toggles-hello-world:${{ github.sha }}
 
+      - name: Login to Octopus Deploy 🐙
+        uses: OctopusDeploy/login@v1
+        with: 
+          server: https://samples.octopus.app
+          api_key: ${{secrets.OCTOPUS_API_KEY}}
+
+      - name: Create a release in Octopus Deploy 🐙
+        uses: OctopusDeploy/create-release-action@v3
+        with:
+          space: 'Pattern - Feature Toggles'
+          project: 'Hello World (with Feature Toggles)'
+          packages: | 
+            feature-toggles-hello-world:${{ github.sha }}
+
 
      
           
