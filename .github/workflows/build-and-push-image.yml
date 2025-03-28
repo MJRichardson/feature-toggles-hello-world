@@ -5,7 +5,7 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ main, localization ]
+      [ main, kubecon-sample ]
       
   # Allow manual trigger 
   workflow_dispatch:      
