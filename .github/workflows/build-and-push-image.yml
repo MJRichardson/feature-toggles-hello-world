@@ -27,9 +27,14 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Build and push image
-        run: |
-          docker build ${{ github.workspace }}/HelloWorld -t ghcr.io/mjrichardson/feature-toggles-hello-world:${{ github.sha }}
-          docker push ghcr.io/mjrichardson/feature-toggles-hello-world:${{ github.sha }}
+        uses: azure/docker-login@v1
+        with:
+            login-server: helloworldfeaturetoggles.azurecr.io
+            username:  ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME }}
+            password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}  
+      - run: |
+          docker build ${{ github.workspace }}/HelloWorld -t helloworldfeaturetoggles.azurecr.io/helloworld:${{ github.sha }}
+          docker push helloworldfeaturetoggles.azurecr.io/helloworld:${{ github.sha }}
 
       - name: Login to Octopus Deploy 🐙
         uses: OctopusDeploy/login@v1
