@@ -30,8 +30,8 @@ jobs:
 
       - name: Build and push image
         run: |
-          docker build ${{ github.workspace }}/HelloWorld -t ghcr.io/MJRichardson/feature-toggles-hello-world:${{ github.sha }}
-          docker push ghcr.io/MJRichardson/feature-toggles-hello-world:${{ github.sha }}
+          docker build ${{ github.workspace }}/HelloWorld -t ghcr.io/mjrichardson/feature-toggles-hello-world:${{ github.sha }}
+          docker push ghcr.io/mjrichardson/feature-toggles-hello-world:${{ github.sha }}
 
 
      
