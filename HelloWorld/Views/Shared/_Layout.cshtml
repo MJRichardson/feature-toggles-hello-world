@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using OpenFeature
+@inject IFeatureClient FeatureClient
+@{
+    var darkModeEnabled = await FeatureClient.GetBooleanValueAsync("dark-mode", false);
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -6,7 +11,10 @@
     <title>@ViewData["Title"] - HelloWorld</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/HelloWorld.styles.css" asp-append-version="true"/>
+    @if (darkModeEnabled)
+    {
+        <link rel="stylesheet" href="~/css/dark.css" asp-append-version="true"/>
+    }
 </head>
 <body>
 <div class="container">

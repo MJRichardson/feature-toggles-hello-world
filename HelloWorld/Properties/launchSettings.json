@@ -16,7 +16,8 @@
       "applicationUrl": "http://localhost:5204",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "FeatureToggle_localization": false 
+        "FeatureToggle_localization": false,
+        "FeatureToggle_dark-mode": false
       }
     },
     "https": {
