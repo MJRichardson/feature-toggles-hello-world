@@ -5,7 +5,7 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ main, localization ]
+      [ main ]
       
   # Allow manual trigger 
   workflow_dispatch:      
@@ -13,45 +13,41 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    
     permissions: 
       id-token: write #This is required for requesting the OIDC JWT Token
       contents: read #Required when GH token is used to authenticate with private repo
-
+      
     steps:
       - name: Checkout to the branch
         uses: actions/checkout@v2
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.FEATURETOGGLESHELLOWORLD_AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.FEATURETOGGLESHELLOWORLD_AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.FEATURETOGGLESHELLOWORLD_AZURE_SUBSCRIPTION_ID }}
-
-      - name: 'Build and push image'
+      - name: Build and push image
         uses: azure/docker-login@v1
         with:
-            login-server: featuretoggleshelloworld.azurecr.io
-            username:  ${{ secrets.FEATURETOGGLESHELLOWORLD_REGISTRY_USERNAME }}
-            password: ${{ secrets.FEATURETOGGLESHELLOWORLD_REGISTRY_PASSWORD }}  
+            login-server: helloworldfeaturetoggles.azurecr.io
+            username:  ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME }}
+            password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}  
       - run: |
-          docker build ${{ github.workspace }}/HelloWorld -t featuretoggleshelloworld.azurecr.io/feature-toggles-hello-world:${{ github.sha }}
-          docker push featuretoggleshelloworld.azurecr.io/feature-toggles-hello-world:${{ github.sha }}
+          docker build ${{ github.workspace }}/HelloWorld -t helloworldfeaturetoggles.azurecr.io/helloworld:${{ github.sha }}
+          docker push helloworldfeaturetoggles.azurecr.io/helloworld:${{ github.sha }}
 
-      - name: Login to Octopus Deploy
+      - name: Login to Octopus Deploy 🐙
         uses: OctopusDeploy/login@v1
         with: 
-          server: https://main.testoctopus.app
-          service_account_id: 09117e10-fb45-4a8a-98e9-282e8e73a633
+          server: https://samples.octopus.app
+          api_key: ${{secrets.OCTOPUS_API_KEY}}
 
       - name: Create a release in Octopus Deploy 🐙
         uses: OctopusDeploy/create-release-action@v3
         with:
-          space: 'MichRich'
-          project: 'Feature Toggles Hello World'
+          space: 'Pattern - Feature Toggles'
+          project: 'Hello World (with Feature Toggles)'
           packages: | 
-            feature-toggles-hello-world:${{ github.sha }}
+            helloworld:${{ github.sha }}
 
+
+     
           
         
 
