@@ -10,10 +10,19 @@ public class HomeController(IFeatureClient featureClient)
 {
     public async Task<IActionResult> Index(Languages language)
     {
-        ViewData["LocalizationFeatureEnabled"] = await featureClient.GetBooleanValueAsync("localization", false);
+        ViewData["LocalizationFeatureEnabled"] = await EvaluateFeatureToggle("localization"); 
         ViewData["Greeting"] = Greeting(language);
         ViewData["Language"] = language;
         return View();
+    }
+
+    async Task<bool> EvaluateFeatureToggle(string flagKey)
+    {
+        var evaluationContext = EvaluationContext.Builder()
+            .Set("license-type", "free")
+            .Build();
+        
+        return await featureClient.GetBooleanValueAsync(flagKey, false, evaluationContext);
     }
 
     string Greeting(Languages language)
