@@ -17,7 +17,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "FeatureToggle_localization": false,
-        "FeatureToggle_dark-mode": false
+        "FeatureToggle_dark-mode": true
       }
     },
     "https": {

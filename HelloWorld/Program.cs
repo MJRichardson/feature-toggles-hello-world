@@ -52,6 +52,6 @@ return;
 static IFeatureClient GetFeatureClient(IServiceProvider serviceProvider)
 {
     var client = OpenFeature.Api.Instance.GetClient();
-    client.SetContext(EvaluationContext.Builder().Set("segment", "alpha").Build());
+    client.SetContext(EvaluationContext.Builder().Set("license-type", "free").Build());
     return client;
 }
