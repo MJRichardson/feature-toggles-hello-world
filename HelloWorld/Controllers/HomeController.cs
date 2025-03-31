@@ -19,7 +19,7 @@ public class HomeController(IFeatureClient featureClient)
     async Task<bool> EvaluateFeatureToggle(string flagKey)
     {
         var evaluationContext = EvaluationContext.Builder()
-            .Set("license-type", "free")
+            .Set("licenseType", "free")
             .Build();
         
         return await featureClient.GetBooleanValueAsync(flagKey, false, evaluationContext);
